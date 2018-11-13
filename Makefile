@@ -1,26 +1,26 @@
 CC=gcc
+CXX=g++
 PREFIX=/usr
 
 CPPFLAGS=
-CFLAGS=-g -fPIC $(shell sdl2-config --cflags) -Iinclude -Wno-incompatible-pointer-types
-LDFLAGS=-shared
-LIBS=$(shell sdl2-config --libs)
+CFLAGS=-g -Iinclude -Wno-incompatible-pointer-types
+CXXFLAGS=-g
+LDFLAGS=
+LIBS=
 
 BINDIR=bin
 INCDIR=include
 SRCDIR=src
 
-SRCFILES=$(SRCDIR)/main.c
-HFILES=$(INCDIR)/pipeworks.h
-OFILES=$(SRCFILES:.c=.o)
+SRCFILES=$(SRCDIR)/main.cpp
+HFILES=$(INCDIR)/rbl1.h
+OFILES=$(SRCFILES:.cpp=.o)
 
-TARGET=$(BINDIR)/libpipeworks.so
+TARGET=$(BINDIR)/rbl1
 
-.PHONY: all clean example exampleclean
+.PHONY: all clean install example exampleclean
 .DEFAULT: all
 .PRECIOUS: Makefile
-.INTERMEDIATE: $(OFILES)
-.DELETE_ON_ERROR:
 
 all: $(TARGET)
 
@@ -31,7 +31,7 @@ install: $(TARGET)
 	cp $(TARGET) $(PREFIX)/lib
 
 $(TARGET): $(OFILES)
-	$(CC) -o $(TARGET) $(LDFLAGS) $(OFILES) $(LIBS)
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OFILES) $(LIBS)
 
 $(OFILES): $(HFILES)
 
@@ -40,7 +40,3 @@ example: $(TARGET)
 
 exampleclean:
 	make -C example clean
-
-test: clean exampleclean all example
-	sudo make install
-	bin/example
